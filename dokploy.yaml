@@ -1,0 +1,16 @@
+build:
+    type: nixpacks
+    path: ./
+    install:
+        - npm install -g pnpm
+        - pnpm install
+    command: pnpm run build
+    start: pnpm start
+    ports:
+        - 3000:3000 # API port
+        - 5173:5173 # Client dev server port (for start:client)
+    env:
+        - name: NODE_VERSION
+          value: "23.3.0" # Based on your package.json engines requirement
+        - name: PNPM_VERSION
+          value: "9.14.4" # Based on your package.json dependencies
