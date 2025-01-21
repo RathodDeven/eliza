@@ -22,6 +22,7 @@ COPY agent ./agent
 COPY packages ./packages
 COPY scripts ./scripts
 COPY characters ./characters
+COPY client ./client
 
 # Install dependencies and build the project
 RUN pnpm install \
@@ -51,6 +52,11 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 COPY --from=builder /app/client ./client
+
+# Copy all client files
+
+# Make sure client has its own package.json
+COPY client/package.json ./client/
 
 # Set the command to run the application
 CMD ["sh", "-c", "pnpm start & SERVER_PORT=3030 pnpm start:client"]
