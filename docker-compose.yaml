@@ -6,11 +6,12 @@ services:
         stdin_open: true
         tty: true
         volumes:
+            - /var/run/tappd.sock:/var/run/tappd.sock
             - tee:/app/packages/client-twitter/src/tweetcache
             - tee:/app/db.sqlite
         environment:
             - HEURIST_API_KEY=${HEURIST_API_KEY}
-            - OPENAI_API_KEY=${OPENAI_API_KEY}
+            - OPENAI_API_KEY=
             - REDPILL_API_KEY=
             - ELEVENLABS_XI_API_KEY=
             - ELEVENLABS_MODEL_ID=eleven_multilingual_v2
@@ -32,10 +33,8 @@ services:
             - HELIUS_API_KEY=
             - SERVER_PORT=3030
             - WALLET_SECRET_SALT=secret_salt
-            - VITE_API_URL=http://localhost:3030
         ports:
             - "3030:3030"
-            - "5173:5173"
         restart: always
 
 volumes:
