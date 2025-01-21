@@ -31,10 +31,10 @@ services:
             - SLIPPAGE=1
             - SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
             - HELIUS_API_KEY=
-            - SERVER_PORT=3000
+            - SERVER_PORT=3002
             - WALLET_SECRET_SALT=secret_salt
         ports:
-            - "3000:3000"
+            - "3002:3002"
         restart: always
 
 volumes:
