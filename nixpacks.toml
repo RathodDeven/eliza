@@ -1,5 +1,4 @@
 [phases.setup]
-# Remove apt packages to prevent GLIBC issues
 aptPkgs = []
 
 [variables]
@@ -8,19 +7,13 @@ PNPM_VERSION = "9.14.4"
 
 [phases.install]
 cmds = [
-    """
-    # Download and install Node.js 23.3.0 binary
-    cd /tmp && \
-    curl -O https://nodejs.org/dist/v23.3.0/node-v23.3.0-linux-x64.tar.xz && \
-    tar -xf node-v23.3.0-linux-x64.tar.xz && \
-    cp -r node-v23.3.0-linux-x64/* /usr && \
-    node --version && \
-    # Install PNPM and dependencies
-    npm install -g pnpm@9.14.4 && \
-    pnpm --version && \
-    cd /app && \
-    pnpm install --frozen-lockfile
-    """
+    "curl -fsSL https://nodejs.org/dist/v23.3.0/node-v23.3.0-linux-x64.tar.xz -o /tmp/node.tar.xz",
+    "tar -xf /tmp/node.tar.xz -C /tmp",
+    "cp -r /tmp/node-v23.3.0-linux-x64/* /usr/local",
+    "node --version",
+    "npm install -g pnpm@9.14.4",
+    "pnpm --version",
+    "pnpm install --frozen-lockfile"
 ]
 
 [phases.build]
