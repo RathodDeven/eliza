@@ -22,7 +22,7 @@ PNPM_VERSION = "9.14.4"
 YOUTUBE_DL_SKIP_PYTHON_CHECK = "1"
 # Skip Playwright browser installation
 PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
-PORT = "0"  # Let Docker assign a random port
+PORT = "3001"  # Use a different port than 3000
 
 [phases.install]
 cmds = [

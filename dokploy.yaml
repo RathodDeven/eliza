@@ -2,7 +2,7 @@ build:
     type: nixpacks
     path: ./
     ports:
-        - 3000:3000 # API port
+        - 3001:3001 # API port
         - 5173:5173 # Client dev server port
     env:
         - name: NODE_VERSION
