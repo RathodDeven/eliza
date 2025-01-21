@@ -1,8 +1,6 @@
 [phases.setup]
-aptPkgs = [
-    "nodejs",
-    "npm"
-]
+# Remove apt packages to prevent GLIBC issues
+aptPkgs = []
 
 [variables]
 NODE_VERSION = "23.3.0"
@@ -10,10 +8,17 @@ PNPM_VERSION = "9.14.4"
 
 [phases.install]
 cmds = [
-    "curl -fsSL https://deb.nodesource.com/setup_23.x | bash -",
-    "apt-get update",
-    "apt-get install -y nodejs",
+    # Use NVM to install Node.js
+    "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash",
+    ". ~/.nvm/nvm.sh",
+    "nvm install 23.3.0",
+    "nvm use 23.3.0",
+    # Install PNPM
     "npm install -g pnpm@9.14.4",
+    # Verify versions
+    "node --version",
+    "pnpm --version",
+    # Install dependencies
     "pnpm install --frozen-lockfile"
 ]
 
