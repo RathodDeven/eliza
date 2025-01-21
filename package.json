@@ -55,8 +55,8 @@
         }
     },
     "engines": {
-        "node": "23.3.0",
-        "pnpm": "9.14.4"
+        "node": "23",
+        "pnpm": "9"
     },
     "dependencies": {
         "@0glabs/0g-ts-sdk": "0.2.1",
