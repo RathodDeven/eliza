@@ -1,25 +1,11 @@
 build:
     type: nixpacks
     path: ./
-    install:
-        # First install Node.js 23.x
-        - curl -fsSL https://deb.nodesource.com/setup_23.x | bash -
-        - apt-get update
-        - apt-get install -y nodejs
-        # Then install correct PNPM version
-        - npm install -g pnpm@9.14.4
-        - pnpm install
-    command: pnpm run build
-    start: pnpm start
     ports:
         - 3000:3000 # API port
-        - 5173:5173 # Client dev server port (for start:client)
+        - 5173:5173 # Client dev server port
     env:
         - name: NODE_VERSION
-          value: "23.3.0" # Based on your package.json engines requirement
+          value: "23.3.0"
         - name: PNPM_VERSION
-          value: "9.14.4" # Based on your package.json dependencies
-    # Add nixpacks specific config
-    nixpacks:
-        node_version: "23.3.0"
-        pnpm_version: "9.14.4"
+          value: "9.14.4"
