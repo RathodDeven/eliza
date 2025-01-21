@@ -21,27 +21,4 @@ cmds = [
 cmds = ["pnpm run build"]
 
 [start]
-cmd = "pnpm start"[phases.setup]
-aptPkgs = [
-    "nodejs",
-    "npm"
-]
-
-[variables]
-NODE_VERSION = "23.3.0"
-PNPM_VERSION = "9.14.4"
-
-[phases.install]
-cmds = [
-    "curl -fsSL https://deb.nodesource.com/setup_23.x | bash -",
-    "apt-get update",
-    "apt-get install -y nodejs",
-    "npm install -g pnpm@9.14.4",
-    "pnpm install --frozen-lockfile"
-]
-
-[phases.build]
-cmds = ["pnpm run build"]
-
-[start]
 cmd = "pnpm start"
