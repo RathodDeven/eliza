@@ -2,8 +2,10 @@ build:
     type: nixpacks
     path: ./
     install:
+        # First install Node.js 23.x
         - curl -fsSL https://deb.nodesource.com/setup_23.x | bash -
         - apt-get install -y nodejs
+        # Then install correct PNPM version
         - npm install -g pnpm@9.14.4
         - pnpm install
     command: pnpm run build
