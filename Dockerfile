@@ -52,4 +52,4 @@ COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
 # Set the command to run the application
-CMD ["pnpm", "start"]
+CMD ["sh", "-c", "pnpm start & SERVER_PORT=3030 pnpm start:client"]
