@@ -33,8 +33,10 @@ services:
             - HELIUS_API_KEY=
             - SERVER_PORT=3030
             - WALLET_SECRET_SALT=secret_salt
+            - VITE_API_URL=http://localhost:3030 # Add this for client
         ports:
-            - "3030:3030"
+            - "3030:3030" # API port
+            - "5173:5173" # Client port
         restart: always
 
 volumes:
