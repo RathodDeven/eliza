@@ -19,3 +19,7 @@ build:
           value: "23.3.0" # Based on your package.json engines requirement
         - name: PNPM_VERSION
           value: "9.14.4" # Based on your package.json dependencies
+    # Add nixpacks specific config
+    nixpacks:
+        node_version: "23.3.0"
+        pnpm_version: "9.14.4"
