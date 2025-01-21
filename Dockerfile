@@ -50,6 +50,7 @@ COPY --from=builder /app/agent ./agent
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
+COPY --from=builder /app/client ./client
 
 # Set the command to run the application
 CMD ["sh", "-c", "pnpm start & SERVER_PORT=3030 pnpm start:client"]
