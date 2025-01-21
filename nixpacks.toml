@@ -1,5 +1,6 @@
 [phases.setup]
 aptPkgs = [
+    "nodejs_22",
     "python3",
     "python-is-python3",
     # Playwright dependencies
@@ -20,36 +21,26 @@ aptPkgs = [
 NODE_VERSION = "23.3.0"
 PNPM_VERSION = "9.14.4"
 YOUTUBE_DL_SKIP_PYTHON_CHECK = "1"
+# Skip Playwright browser installation
 PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
-PORT = "3001"
+PORT = "3001"  # Use a different port than 3000
 
 [phases.install]
 cmds = [
-    # Remove existing Node.js
-    "rm -rf /usr/local/bin/node /usr/local/bin/npm",
-    # Install Node.js 23
+    # Install Node.js
     "curl -fsSL https://nodejs.org/dist/v23.3.0/node-v23.3.0-linux-x64.tar.xz -o /tmp/node.tar.xz",
     "tar -xf /tmp/node.tar.xz -C /tmp",
     "cp -r /tmp/node-v23.3.0-linux-x64/* /usr/local",
-    # Verify Node.js version
     "node --version",
     # Install PNPM
     "npm install -g pnpm@9.14.4",
     "pnpm --version",
-    # Install dependencies
+    # Install dependencies without Playwright
     "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 pnpm install --frozen-lockfile --ignore-scripts"
 ]
 
 [phases.build]
-cmds = [
-    "node --version > .nodeversion",
-    "pnpm run build"
-]
+cmds = ["pnpm run build"]
 
 [start]
-cmd = """
-node --version && \
-export PATH=/usr/local/bin:$PATH && \
-cd /app && \
-pnpm start
-"""
+cmd = "pnpm start"
