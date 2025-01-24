@@ -12,11 +12,23 @@ import type { ClientBase } from "./base";
 import {
     type Scraper,
     Space,
-    type SpaceConfig,
     RecordToDiskPlugin,
     IdleMonitorPlugin,
-    type SpeakerRequest,
 } from "agent-twitter-client";
+export interface SpeakerRequest {
+    userId: string;
+    username: string;
+    displayName: string;
+    sessionUUID: string;
+}
+
+interface SpaceConfig {
+    mode: "BROADCAST" | "LISTEN" | "INTERACTIVE";
+    title?: string;
+    description?: string;
+    languages?: string[];
+}
+
 import { SttTtsPlugin } from "./plugins/SttTtsSpacesPlugin.ts";
 
 interface CurrentSpeakerState {
@@ -31,10 +43,11 @@ interface CurrentSpeakerState {
  */
 async function generateFiller(
     runtime: IAgentRuntime,
-    fillerType: string
+    fillerType: string,
 ): Promise<string> {
     try {
         const context = composeContext({
+            // @ts-ignore
             state: { fillerType },
             template: `
 # INSTRUCTIONS:
@@ -64,7 +77,7 @@ async function speakFiller(
     runtime: IAgentRuntime,
     sttTtsPlugin: SttTtsPlugin | undefined,
     fillerType: string,
-    sleepAfterMs = 3000
+    sleepAfterMs = 3000,
 ): Promise<void> {
     if (!sttTtsPlugin) return;
     const text = await generateFiller(runtime, fillerType);
@@ -82,10 +95,11 @@ async function speakFiller(
  * Generate topic suggestions via GPT if no topics are configured
  */
 async function generateTopicsIfEmpty(
-    runtime: IAgentRuntime
+    runtime: IAgentRuntime,
 ): Promise<string[]> {
     try {
         const context = composeContext({
+            // @ts-ignore
             state: {},
             template: `
 # INSTRUCTIONS:
@@ -187,7 +201,7 @@ export class TwitterSpaceClient {
                         routine,
                         this.isSpaceRunning
                             ? intervalMsWhenRunning
-                            : intervalMsWhenIdle
+                            : intervalMsWhenIdle,
                     );
                 } else {
                     // Space is running => manage it more frequently
@@ -195,7 +209,7 @@ export class TwitterSpaceClient {
                     // Plan next iteration with a faster pace
                     this.checkInterval = setTimeout(
                         routine,
-                        intervalMsWhenRunning
+                        intervalMsWhenRunning,
                     );
                 }
             } catch (error) {
@@ -263,7 +277,7 @@ export class TwitterSpaceClient {
             chosenTopic =
                 this.decisionOptions.topics[
                     Math.floor(
-                        Math.random() * this.decisionOptions.topics.length
+                        Math.random() * this.decisionOptions.topics.length,
                     )
                 ];
         }
@@ -314,7 +328,7 @@ export class TwitterSpaceClient {
                     sttLanguage: this.decisionOptions.sttLanguage,
                     transcriptionService:
                         this.client.runtime.getService<ITranscriptionService>(
-                            ServiceType.TRANSCRIPTION
+                            ServiceType.TRANSCRIPTION,
                         ),
                 });
             }
@@ -324,19 +338,19 @@ export class TwitterSpaceClient {
                 this.currentSpace.use(
                     new IdleMonitorPlugin(
                         this.decisionOptions.idleKickTimeoutMs ?? 60_000,
-                        10_000
-                    )
+                        10_000,
+                    ),
                 );
             }
 
             this.isSpaceRunning = true;
             await this.scraper.sendTweet(
-                broadcastInfo.share_url.replace("broadcasts", "spaces")
+                broadcastInfo.share_url.replace("broadcasts", "spaces"),
             );
 
             const spaceUrl = broadcastInfo.share_url.replace(
                 "broadcasts",
-                "spaces"
+                "spaces",
             );
             elizaLogger.log(`[Space] Space started => ${spaceUrl}`);
 
@@ -344,13 +358,13 @@ export class TwitterSpaceClient {
             await speakFiller(
                 this.client.runtime,
                 this.sttTtsPlugin,
-                "WELCOME"
+                "WELCOME",
             );
 
             // Events
             this.currentSpace.on("occupancyUpdate", (update) => {
                 elizaLogger.log(
-                    `[Space] Occupancy => ${update.occupancy} participant(s).`
+                    `[Space] Occupancy => ${update.occupancy} participant(s).`,
                 );
             });
 
@@ -358,20 +372,20 @@ export class TwitterSpaceClient {
                 "speakerRequest",
                 async (req: SpeakerRequest) => {
                     elizaLogger.log(
-                        `[Space] Speaker request from @${req.username} (${req.userId}).`
+                        `[Space] Speaker request from @${req.username} (${req.userId}).`,
                     );
                     await this.handleSpeakerRequest(req);
-                }
+                },
             );
 
             this.currentSpace.on("idleTimeout", async (info) => {
                 elizaLogger.log(
-                    `[Space] idleTimeout => no audio for ${info.idleMs} ms.`
+                    `[Space] idleTimeout => no audio for ${info.idleMs} ms.`,
                 );
                 await speakFiller(
                     this.client.runtime,
                     this.sttTtsPlugin,
-                    "IDLE_ENDING"
+                    "IDLE_ENDING",
                 );
                 await this.stopSpace();
             });
@@ -381,7 +395,7 @@ export class TwitterSpaceClient {
                 await speakFiller(
                     this.client.runtime,
                     this.sttTtsPlugin,
-                    "CLOSING"
+                    "CLOSING",
                 );
                 await this.stopSpace();
                 process.exit(0);
@@ -400,7 +414,7 @@ export class TwitterSpaceClient {
         if (!this.spaceId || !this.currentSpace) return;
         try {
             const audioSpace = await this.scraper.getAudioSpaceById(
-                this.spaceId
+                this.spaceId,
             );
             const { participants } = audioSpace;
             const numSpeakers = participants.speakers?.length || 0;
@@ -415,7 +429,7 @@ export class TwitterSpaceClient {
                 const elapsed = now - speaker.startTime;
                 if (elapsed > maxDur) {
                     elizaLogger.log(
-                        `[Space] Speaker @${speaker.username} exceeded max duration => removing`
+                        `[Space] Speaker @${speaker.username} exceeded max duration => removing`,
                     );
                     await this.removeSpeaker(speaker.userId);
                     this.activeSpeakers.splice(i, 1);
@@ -424,7 +438,7 @@ export class TwitterSpaceClient {
                     await speakFiller(
                         this.client.runtime,
                         this.sttTtsPlugin,
-                        "SPEAKER_LEFT"
+                        "SPEAKER_LEFT",
                     );
                 }
             }
@@ -435,7 +449,7 @@ export class TwitterSpaceClient {
             // 3) If somehow more than maxSpeakers are active, remove the extras
             if (numSpeakers > (this.decisionOptions.maxSpeakers ?? 1)) {
                 elizaLogger.log(
-                    "[Space] More than maxSpeakers => removing extras..."
+                    "[Space] More than maxSpeakers => removing extras...",
                 );
                 await this.kickExtraSpeakers(participants.speakers);
             }
@@ -450,13 +464,13 @@ export class TwitterSpaceClient {
                     elapsedMinutes > 5)
             ) {
                 elizaLogger.log(
-                    "[Space] Condition met => stopping the Space..."
+                    "[Space] Condition met => stopping the Space...",
                 );
                 await speakFiller(
                     this.client.runtime,
                     this.sttTtsPlugin,
                     "CLOSING",
-                    4000
+                    4000,
                 );
                 await this.stopSpace();
             }
@@ -480,7 +494,7 @@ export class TwitterSpaceClient {
                 await speakFiller(
                     this.client.runtime,
                     this.sttTtsPlugin,
-                    "PRE_ACCEPT"
+                    "PRE_ACCEPT",
                 );
                 await this.acceptSpeaker(nextReq);
             }
@@ -499,12 +513,12 @@ export class TwitterSpaceClient {
             await speakFiller(
                 this.client.runtime,
                 this.sttTtsPlugin,
-                "PRE_ACCEPT"
+                "PRE_ACCEPT",
             );
             await this.acceptSpeaker(req);
         } else {
             elizaLogger.log(
-                `[Space] Adding speaker @${req.username} to the queue`
+                `[Space] Adding speaker @${req.username} to the queue`,
             );
             this.speakerQueue.push(req);
         }
@@ -524,7 +538,7 @@ export class TwitterSpaceClient {
         } catch (err) {
             elizaLogger.error(
                 `[Space] Error approving speaker @${req.username}:`,
-                err
+                err,
             );
         }
     }
@@ -537,7 +551,7 @@ export class TwitterSpaceClient {
         } catch (error) {
             elizaLogger.error(
                 `[Space] Error removing speaker userId=${userId} =>`,
-                error
+                error,
             );
         }
     }
@@ -554,13 +568,13 @@ export class TwitterSpaceClient {
         const extras = speakers.slice(ms);
         for (const sp of extras) {
             elizaLogger.log(
-                `[Space] Removing extra speaker => userId=${sp.user_id}`
+                `[Space] Removing extra speaker => userId=${sp.user_id}`,
             );
             await this.removeSpeaker(sp.user_id);
 
             // remove from activeSpeakers array
             const idx = this.activeSpeakers.findIndex(
-                (s) => s.userId === sp.user_id
+                (s) => s.userId === sp.user_id,
             );
             if (idx !== -1) {
                 this.activeSpeakers.splice(idx, 1);
