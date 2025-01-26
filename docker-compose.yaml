@@ -37,7 +37,6 @@ services:
             # Refer to: https://github.com/elizaOS/eliza/blob/develop/.env.example for all available environment variables
         ports:
             - "3040:3040"
-            - "5173:5173"
         restart: always
 
 volumes:
