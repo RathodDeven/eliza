@@ -5,4 +5,3 @@ export * from "./muteRoom.ts";
 export * from "./none.ts";
 export * from "./unfollowRoom.ts";
 export * from "./unmuteRoom.ts";
-export * from "./deployCharacter.ts";

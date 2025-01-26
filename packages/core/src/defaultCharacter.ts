@@ -5,7 +5,7 @@ export const defaultCharacter: Character = {
     username: "eliza",
     plugins: [],
     clients: [],
-    modelProvider: ModelProviderName.GROK,
+    modelProvider: ModelProviderName.HEURIST,
     settings: {
         secrets: {},
         voice: {
