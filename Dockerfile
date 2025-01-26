@@ -74,4 +74,4 @@ COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/characters ./characters
 
-CMD ["pnpm": "start"]
+CMD ["pnpm","start"]
