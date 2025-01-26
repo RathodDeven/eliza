@@ -30,11 +30,11 @@ services:
             - SLIPPAGE=1
             - SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
             - HELIUS_API_KEY=
-            - SERVER_PORT=3030
+            - SERVER_PORT=3040
             - WALLET_SECRET_SALT=secret_salt
             # Refer to: https://github.com/elizaOS/eliza/blob/develop/.env.example for all available environment variables
         ports:
-            - "3030:3030"
+            - "3040:3040"
             - "5173:5173"
         restart: always
 
