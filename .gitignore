@@ -49,7 +49,7 @@ characters/**/secrets.json
 characters/**/*.env
 characters/**/*.key
 characters/**/private/
-
+characters
 packages/core/src/providers/cache
 packages/core/src/providers/cache/*
 cache/*
