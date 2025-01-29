@@ -209,6 +209,7 @@ export type Models = {
     [ModelProviderName.LLAMACLOUD]: Model;
     [ModelProviderName.TOGETHER]: Model;
     [ModelProviderName.LLAMALOCAL]: Model;
+    [ModelProviderName.LMSTUDIO]: Model;
     [ModelProviderName.GOOGLE]: Model;
     [ModelProviderName.MISTRAL]: Model;
     [ModelProviderName.CLAUDE_VERTEX]: Model;
@@ -230,6 +231,7 @@ export type Models = {
     [ModelProviderName.LIVEPEER]: Model;
     [ModelProviderName.DEEPSEEK]: Model;
     [ModelProviderName.INFERA]: Model;
+    [ModelProviderName.BEDROCK]: Model;
     [ModelProviderName.ATOMA]: Model;
 };
 
@@ -245,6 +247,7 @@ export enum ModelProviderName {
     LLAMACLOUD = "llama_cloud",
     TOGETHER = "together",
     LLAMALOCAL = "llama_local",
+    LMSTUDIO = "lmstudio",
     GOOGLE = "google",
     MISTRAL = "mistral",
     CLAUDE_VERTEX = "claude_vertex",
@@ -267,6 +270,7 @@ export enum ModelProviderName {
     LETZAI = "letzai",
     DEEPSEEK = "deepseek",
     INFERA = "infera",
+    BEDROCK = "bedrock",
     ATOMA = "atoma",
 }
 
@@ -644,17 +648,21 @@ export type Plugin = {
  * Available client platforms
  */
 export enum Clients {
+    ALEXA= "alexa",
     DISCORD = "discord",
     DIRECT = "direct",
     TWITTER = "twitter",
     TELEGRAM = "telegram",
+    TELEGRAM_ACCOUNT = "telegram-account",
     FARCASTER = "farcaster",
     LENS = "lens",
     AUTO = "auto",
     SLACK = "slack",
     GITHUB = "github",
     INSTAGRAM = "instagram",
-    SIMSAI = "simsai"
+    SIMSAI = "simsai",
+    XMTP = "xmtp",
+    DEVA = "deva",
 }
 
 export interface IAgentConfig {
@@ -767,6 +775,7 @@ export type Character = {
         jeeterInteractionTemplate?: string;
         jeeterMessageHandlerTemplate?: string;
         jeeterShouldRespondTemplate?: string;
+        devaPostTemplate?: string;
     };
 
     /** Character biography */
@@ -852,6 +861,7 @@ export type Character = {
             teamAgentIds?: string[];
             teamLeaderId?: string;
             teamMemberInterestKeywords?: string[];
+            allowedChannelIds?: string[];
             autoPost?: {
                 enabled?: boolean;
                 monitorTime?: number;
@@ -1513,6 +1523,7 @@ export enum ServiceType {
     TEE_LOG = "tee_log",
     GOPLUS_SECURITY = "goplus_security",
     WEB_SEARCH = "web_search",
+    EMAIL_AUTOMATION = "email_automation",
 }
 
 export enum LoggingLevel {
@@ -1637,7 +1648,6 @@ export enum ActionTimelineType {
     ForYou = "foryou",
     Following = "following",
 }
-
 export enum KnowledgeScope {
     SHARED = "shared",
     PRIVATE = "private",
