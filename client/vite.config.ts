@@ -35,5 +35,10 @@ export default defineConfig(({ mode }) => {
                 "@": "/src",
             },
         },
+        server: {
+            host: "0.0.0.0", // Listen on all interfaces
+            port: 5173,
+            strictPort: true, // Fail if port is already in use
+        },
     };
 });
